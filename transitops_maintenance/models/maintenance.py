@@ -70,3 +70,25 @@ class TransitOpsMaintenance(models.Model):
             # Only release if they were actually locked by this record
             if record.vehicle_id.status == 'maintenance':
                 record.vehicle_id.write({'status': 'available'})
+
+    @api.model
+    def get_maintenance_registry_data(self):
+        """ Payload for the custom OWL Maintenance UI """
+        logs = self.search_read([], ['id', 'name', 'vehicle_id', 'type', 'cost', 'status', 'date_scheduled'])
+        
+        total_cost = sum(log['cost'] or 0.0 for log in logs)
+        in_repair = len([l for l in logs if l['status'] == 'in_progress'])
+        pending = len([l for l in logs if l['status'] == 'scheduled'])
+        
+        # Flatten Many2one
+        for l in logs:
+            l['vehicle_name'] = l['vehicle_id'][1] if l['vehicle_id'] else 'Unknown'
+            
+        return {
+            'kpis': {
+                'total_cost': total_cost,
+                'in_repair': in_repair,
+                'pending': pending
+            },
+            'logs': logs
+        }

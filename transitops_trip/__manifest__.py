@@ -19,6 +19,13 @@ TransitOps Trip & Dispatch Management
         'data/sequence.xml',
         'views/trip_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'transitops_trip/static/src/scss/trip_registry.scss',
+            'transitops_trip/static/src/xml/trip_registry.xml',
+            'transitops_trip/static/src/js/trip_registry.js',
+        ],
+    },
     'installable': True,
     'application': False,
     'auto_install': False,

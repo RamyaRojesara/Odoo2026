@@ -111,3 +111,30 @@ class TransitOpsTrip(models.Model):
                 record.vehicle_id.write({'status': 'available'})
             if record.driver_id.status == 'in_trip':
                 record.driver_id.write({'status': 'available'})
+
+    @api.model
+    def get_trip_registry_data(self):
+        """ Payload for the custom OWL Trip Registry UI """
+        trips = self.search_read([], ['id', 'name', 'vehicle_id', 'driver_id', 'cargo_weight', 'status'])
+        
+        # Flatten many2one fields
+        for t in trips:
+            t['vehicle_name'] = t['vehicle_id'][1] if t['vehicle_id'] else 'Unassigned'
+            t['driver_name'] = t['driver_id'][1] if t['driver_id'] else 'Unassigned'
+        
+        from datetime import date
+        today = date.today()
+        # simplified check for today's completed trips
+        completed_today = self.search_count([
+            ('status', '=', 'completed'),
+            ('write_date', '>=', today)
+        ])
+        
+        return {
+            'kpis': {
+                'active': len([t for t in trips if t['status'] in ('dispatched', 'in_transit')]),
+                'completed': completed_today,
+                'pending': len([t for t in trips if t['status'] == 'draft'])
+            },
+            'trips': trips
+        }

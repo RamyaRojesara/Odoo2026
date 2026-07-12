@@ -59,23 +59,14 @@
     </record>
 
     <!-- Action -->
-    <record id="action_transitops_trip" model="ir.actions.act_window">
-        <field name="name">Trips &amp; Dispatch</field>
-        <field name="res_model">transitops.trip</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create a new Trip
-            </p>
-            <p>
-                Manage your logistics operations. The system will automatically ensure compliance and asset availability.
-            </p>
-        </field>
+    <record id="action_transitops_trip" model="ir.actions.client">
+        <field name="name">Trip &amp; Dispatch</field>
+        <field name="tag">transitops_trip.registry_main</field>
     </record>
 
     <!-- Menu Item (Depends on Dashboard module's root menu) -->
     <menuitem id="menu_transitops_trip" 
-              name="Trips" 
+              name="Trip &amp; Dispatch" 
               parent="transitops_dashboard.menu_transitops_root" 
               action="action_transitops_trip" 
               sequence="40"/>

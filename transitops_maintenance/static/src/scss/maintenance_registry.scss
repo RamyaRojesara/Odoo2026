@@ -1,0 +1,252 @@
+.transitops-maintenance-wrapper {
+    background-color: #111827; // Very dark navy/gray background
+    color: #e5e7eb;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+    box-sizing: border-box;
+
+    * { box-sizing: border-box; }
+
+    .transitops-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 60vh;
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #ef4444; // Red spinner for maintenance
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        p {
+            margin-top: 16px;
+            color: #9ca3af;
+        }
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .transitops-maintenance-registry {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+
+        // HEADER AREA
+        .registry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+
+            .title-group {
+                h1 {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: white;
+                    margin: 0 0 8px 0;
+                }
+                p {
+                    margin: 0;
+                    color: #9ca3af;
+                    font-size: 14px;
+                }
+            }
+
+            .action-group {
+                .btn-add-maintenance {
+                    background-color: #ef4444; // Primary Red
+                    color: white; 
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    transition: all 0.2s;
+                    &:hover { background-color: #dc2626; transform: translateY(-1px); }
+                }
+            }
+        }
+
+        // KPI SECTION
+        .kpi-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            
+            .kpi-card {
+                background-color: #1f2937;
+                border-radius: 12px;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+
+                .kpi-header {
+                    font-size: 12px;
+                    color: #9ca3af;
+                    font-weight: 500;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    i { font-size: 16px; color: #6b7280; }
+                    .text-success { color: #10b981; }
+                    .text-primary { color: #3b82f6; }
+                    .text-warning { color: #f59e0b; }
+                }
+
+                .kpi-value-row {
+                    display: flex;
+                    align-items: baseline;
+                    gap: 12px;
+                    margin-top: 16px;
+
+                    .kpi-value {
+                        font-size: 32px;
+                        font-weight: 700;
+                        color: white;
+                    }
+
+                    .kpi-trend {
+                        font-size: 12px;
+                        font-weight: 600;
+                        &.trend-down {
+                            color: #9ca3af;
+                        }
+                    }
+                }
+            }
+        }
+
+        // DATA TABLE
+        .registry-table-container {
+            background-color: #1f2937;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+
+            .registry-table {
+                width: 100%;
+                border-collapse: collapse;
+
+                th {
+                    text-align: left;
+                    font-size: 11px;
+                    color: #6b7280;
+                    font-weight: 600;
+                    letter-spacing: 1px;
+                    padding: 16px 24px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                }
+
+                td {
+                    padding: 16px 24px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+                    font-size: 13px;
+                    color: #d1d5db;
+                    vertical-align: middle;
+                }
+
+                tbody tr {
+                    cursor: pointer;
+                    transition: background-color 0.2s;
+                    &:hover { background-color: rgba(255, 255, 255, 0.02); }
+                }
+                
+                .log-id {
+                    font-weight: 600;
+                    color: white;
+                }
+
+                .asset-pill {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background-color: rgba(255, 255, 255, 0.05);
+                    padding: 4px 10px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    i { color: #9ca3af; }
+                }
+                
+                .type-cell {
+                    .type-indicator {
+                        font-size: 12px;
+                        font-weight: 500;
+                        &.routine { color: #3b82f6; }
+                        &.repair { color: #f59e0b; }
+                        &.urgent { color: #ef4444; }
+                    }
+                }
+
+                .cost-cell {
+                    font-weight: 500;
+                    color: #10b981;
+                }
+
+                // Status Badges
+                .status-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    background-color: transparent;
+                    border: 1px solid transparent;
+
+                    &.badge-scheduled { 
+                        color: #9ca3af; 
+                        border-color: rgba(156, 163, 175, 0.3); 
+                        background-color: rgba(156, 163, 175, 0.1); 
+                    }
+                    &.badge-in_progress { 
+                        color: #f59e0b; 
+                        border-color: rgba(245, 158, 11, 0.3); 
+                        background-color: rgba(245, 158, 11, 0.1); 
+                    }
+                    &.badge-completed { 
+                        color: #10b981; 
+                        border-color: rgba(16, 185, 129, 0.3); 
+                        background-color: rgba(16, 185, 129, 0.1); 
+                    }
+                    &.badge-cancelled { 
+                        color: #ef4444; 
+                        border-color: rgba(239, 68, 68, 0.3); 
+                        background-color: rgba(239, 68, 68, 0.1); 
+                    }
+                }
+
+                .actions-cell {
+                    .btn-action {
+                        padding: 6px 12px;
+                        border-radius: 4px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        border: none;
+                        transition: opacity 0.2s;
+                        &:hover { opacity: 0.9; }
+
+                        &.btn-start {
+                            background-color: #f59e0b;
+                            color: #111827;
+                        }
+                        &.btn-complete {
+                            background-color: #10b981;
+                            color: white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

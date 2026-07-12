@@ -3,12 +3,13 @@ import odoo
 from odoo import http
 from odoo.http import request
 from odoo.addons.web.controllers.home import Home
+from odoo.addons.web.controllers.utils import ensure_db
 
 class TransitOpsAuth(Home):
 
     @http.route('/web/login', type='http', auth="none")
     def web_login(self, redirect=None, **kw):
-        odoo.addons.web.controllers.utils.ensure_db()
+        ensure_db()
         request.params['login_success'] = False
         
         # Intercept RBAC Role if provided during POST

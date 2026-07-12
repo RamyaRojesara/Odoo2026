@@ -1,0 +1,17 @@
+# TransitOps Odoo 19 Environment Dependencies
+# -------------------------------------------
+# Note: Our custom modules (transitops_*) are built natively for Odoo 
+# and do not strictly require external Python libraries outside of the standard Odoo environment.
+# Below are the core dependencies required to run an Odoo 19 environment.
+
+odoo==19.0
+psycopg2==2.9.9
+lxml==5.1.0
+Pillow==10.2.0
+Werkzeug==3.0.1
+Jinja2==3.1.3
+python-dateutil==2.8.2
+requests==2.31.0
+urllib3==2.2.1
+reportlab==4.1.0
+passlib==1.7.4

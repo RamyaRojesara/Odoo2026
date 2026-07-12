@@ -18,6 +18,13 @@ TransitOps Maintenance Management
         'data/sequence.xml',
         'views/maintenance_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'transitops_maintenance/static/src/scss/maintenance_registry.scss',
+            'transitops_maintenance/static/src/xml/maintenance_registry.xml',
+            'transitops_maintenance/static/src/js/maintenance_registry.js',
+        ],
+    },
     'installable': True,
     'application': False,
     'auto_install': False,

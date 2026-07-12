@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Driver Form View -->
+    <record id="view_transitops_driver_form" model="ir.ui.view">
+        <field name="name">transitops.driver.form</field>
+        <field name="model">transitops.driver</field>
+        <field name="arch" type="xml">
+            <form string="Driver">
+                <header>
+                    <button name="action_set_available" type="object" string="Set Available" class="btn-primary" invisible="status == 'available'"/>
+                    <button name="action_suspend" type="object" string="Suspend Driver" class="btn-secondary" invisible="status == 'suspended'" confirm="Are you sure you want to suspend this driver? They will be unable to dispatch."/>
+                    <field name="status" widget="statusbar" statusbar_visible="available,in_trip,suspended,inactive"/>
+                </header>
+                <sheet>
+                    <!-- Strict Business Rule UI Warning -->
+                    <widget name="web_ribbon" title="License Expired!" bg_color="text-bg-danger" invisible="is_license_expired == False"/>
+                    
+                    <field name="active" invisible="1"/>
+                    <field name="is_license_expired" invisible="1"/>
+                    
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                    
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" string="Driver Full Name"/>
+                        <h1><field name="name" placeholder="e.g. John Doe"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group name="employment" string="Employment Details">
+                            <field name="employee_id"/>
+                            <field name="category"/>
+                            <field name="safety_score"/>
+                        </group>
+                        <group name="contact" string="Contact &amp; Account">
+                            <field name="phone"/>
+                            <field name="user_id" placeholder="Link to Portal/User Account"/>
+                        </group>
+                    </group>
+                    <group name="compliance" string="Compliance">
+                        <field name="license_number"/>
+                        <field name="license_expiry" decoration-danger="is_license_expired == True"/>
+                        <field name="is_license_expired" widget="boolean_toggle" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Driver Tree (List) View -->
+    <record id="view_transitops_driver_tree" model="ir.ui.view">
+        <field name="name">transitops.driver.tree</field>
+        <field name="model">transitops.driver</field>
+        <field name="arch" type="xml">
+            <tree string="Drivers" decoration-danger="is_license_expired==True" decoration-muted="status=='inactive'">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="license_number"/>
+                <field name="license_expiry" decoration-danger="is_license_expired==True"/>
+                <field name="is_license_expired" invisible="1"/>
+                <field name="status" widget="badge" 
+                       decoration-success="status == 'available'"
+                       decoration-info="status == 'in_trip'"
+                       decoration-danger="status == 'suspended'"
+                       decoration-muted="status == 'inactive'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Driver Kanban View -->
+    <record id="view_transitops_driver_kanban" model="ir.ui.view">
+        <field name="name">transitops.driver.kanban</field>
+        <field name="model">transitops.driver</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" class="o_kanban_mobile">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="license_expiry"/>
+                <field name="is_license_expired"/>
+                <field name="status"/>
+                <field name="image_1920"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
+                            <div class="o_kanban_image_fill_left d-none d-md-block"
+                                 t-attf-style="background-image:url('#{kanban_image('transitops.driver', 'image_1920', record.id.raw_value)}')"/>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="o_kanban_record_subtitle">
+                                    <t t-if="record.is_license_expired.raw_value">
+                                        <span class="text-danger fw-bold"><i class="fa fa-exclamation-triangle"></i> License Expired</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-muted">Valid until: <field name="license_expiry"/></span>
+                                    </t>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="status" widget="label_selection" options="{'classes': {'available': 'success', 'in_trip': 'info', 'suspended': 'danger', 'inactive': 'default'}}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_transitops_driver" model="ir.actions.client">
+        <field name="name">Drivers</field>
+        <field name="tag">transitops_driver.registry_main</field>
+    </record>
+
+    <!-- Menu Item (Depends on Dashboard module's root menu) -->
+    <menuitem id="menu_transitops_driver" 
+              name="Drivers" 
+              parent="transitops_dashboard.menu_transitops_root" 
+              action="action_transitops_driver" 
+              sequence="30"/>
+
+</odoo>

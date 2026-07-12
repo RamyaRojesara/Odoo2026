@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_transitops_driver_driver,transitops.driver.driver,model_transitops_driver,transitops_auth.group_driver,1,0,0,0
+access_transitops_driver_financial,transitops.driver.financial,model_transitops_driver,transitops_auth.group_financial_analyst,1,0,0,0
+access_transitops_driver_dispatcher,transitops.driver.dispatcher,model_transitops_driver,transitops_auth.group_dispatcher,1,1,0,0
+access_transitops_driver_fleet_manager,transitops.driver.fleet_manager,model_transitops_driver,transitops_auth.group_fleet_manager,1,1,1,1
+access_transitops_driver_safety_officer,transitops.driver.safety_officer,model_transitops_driver,transitops_auth.group_safety_officer,1,1,1,1
+access_transitops_driver_admin,transitops.driver.admin,model_transitops_driver,transitops_auth.group_admin,1,1,1,1

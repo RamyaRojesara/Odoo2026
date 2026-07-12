@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="transitops_vehicle.registry_main" owl="1">
+        <div class="transitops-registry-wrapper">
+            <t t-if="state.loading">
+                <div class="transitops-loading">
+                    <div class="spinner"></div>
+                    <p>Loading Registry...</p>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="transitops-registry">
+                    
+                    <!-- Top Bar (matches the Dashboard top bar design loosely to maintain flow, though the image mostly shows the main area) -->
+                    <div class="top-bar">
+                        <div class="search-bar">
+                            <i class="fa fa-search"></i>
+                            <input type="text" placeholder="Search registry..."/>
+                        </div>
+                        <div class="user-actions">
+                            <i class="fa fa-bell-o"></i>
+                            <i class="fa fa-envelope-o"></i>
+                            <div class="profile">
+                                <span>Dispatcher</span>
+                                <div class="avatar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Header Area -->
+                    <div class="registry-header">
+                        <div class="title-group">
+                            <h1>Vehicle Registry</h1>
+                            <p>Manage and monitor all registered fleet vehicles across all regions.</p>
+                        </div>
+                        <div class="action-group">
+                            <button class="btn-add-vehicle" t-on-click="openCreateForm">
+                                <i class="fa fa-plus"></i> Add Vehicle
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Section -->
+                    <div class="kpi-section">
+                        <div class="kpi-card">
+                            <div class="kpi-label">
+                                <span>Total<br/>Vehicles</span>
+                                <i class="fa fa-car"></i>
+                            </div>
+                            <div class="kpi-value"><t t-esc="state.vehicles.length"/></div>
+                        </div>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div class="registry-table-container">
+                        <table class="registry-table">
+                            <thead>
+                                <tr>
+                                    <th>REG NO</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.vehicles" t-as="vehicle" t-key="vehicle.id">
+                                    <tr t-on-click="() => this.openVehicleRecord(vehicle.id)">
+                                        <td class="reg-no"><t t-esc="vehicle.name"/></td>
+                                        <td>
+                                            <span t-attf-class="status-badge badge-#{vehicle.status}">
+                                                <t t-if="vehicle.status === 'available'">Available</t>
+                                                <t t-if="vehicle.status === 'in_trip'">On Trip</t>
+                                                <t t-if="vehicle.status === 'maintenance'">Maintenance</t>
+                                                <t t-if="vehicle.status === 'retired'">Retired</t>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="state.vehicles.length === 0">
+                                    <tr>
+                                        <td colspan="2" class="empty-state">No vehicles found in the registry.</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

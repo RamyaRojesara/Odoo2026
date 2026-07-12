@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Trip Form View -->
+    <record id="view_transitops_trip_form" model="ir.ui.view">
+        <field name="name">transitops.trip.form</field>
+        <field name="model">transitops.trip</field>
+        <field name="arch" type="xml">
+            <form string="Trip Dispatch">
+                <header>
+                    <button name="action_dispatch" type="object" string="Dispatch" class="btn-primary" invisible="status != 'draft'" confirm="Confirm Dispatch? This will lock the selected Vehicle and Driver."/>
+                    <button name="action_start_transit" type="object" string="Start Transit" class="btn-primary" invisible="status != 'dispatched'"/>
+                    <button name="action_complete" type="object" string="Complete Trip" class="btn-success" invisible="status != 'in_transit'" confirm="Trip completed successfully? This will release the assets back to available."/>
+                    <button name="action_cancel" type="object" string="Cancel Trip" class="btn-secondary" invisible="status in ('completed', 'cancelled')"/>
+                    
+                    <field name="status" widget="statusbar" statusbar_visible="draft,dispatched,in_transit,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Assets &amp; Personnel">
+                            <field name="vehicle_id" options="{'no_create': True}"/>
+                            <field name="driver_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Logistics">
+                            <field name="start_location"/>
+                            <field name="end_location"/>
+                            <field name="cargo_weight"/>
+                            <field name="eta"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Trip Tree (List) View -->
+    <record id="view_transitops_trip_tree" model="ir.ui.view">
+        <field name="name">transitops.trip.tree</field>
+        <field name="model">transitops.trip</field>
+        <field name="arch" type="xml">
+            <tree string="Trips" decoration-info="status=='dispatched'" decoration-primary="status=='in_transit'" decoration-success="status=='completed'" decoration-muted="status=='cancelled'">
+                <field name="name"/>
+                <field name="vehicle_id"/>
+                <field name="driver_id"/>
+                <field name="start_location"/>
+                <field name="end_location"/>
+                <field name="eta"/>
+                <field name="status" widget="badge" 
+                       decoration-info="status == 'dispatched'"
+                       decoration-primary="status == 'in_transit'"
+                       decoration-success="status == 'completed'"
+                       decoration-muted="status in ('draft', 'cancelled')"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_transitops_trip" model="ir.actions.act_window">
+        <field name="name">Trips &amp; Dispatch</field>
+        <field name="res_model">transitops.trip</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Trip
+            </p>
+            <p>
+                Manage your logistics operations. The system will automatically ensure compliance and asset availability.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item (Depends on Dashboard module's root menu) -->
+    <menuitem id="menu_transitops_trip" 
+              name="Trips" 
+              parent="transitops_dashboard.menu_transitops_root" 
+              action="action_transitops_trip" 
+              sequence="40"/>
+
+</odoo>

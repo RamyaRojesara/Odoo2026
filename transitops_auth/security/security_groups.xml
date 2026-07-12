@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Category for TransitOps Roles -->
+        <record model="ir.module.category" id="module_category_transitops">
+            <field name="name">TransitOps</field>
+            <field name="description">Roles for TransitOps Fleet Management</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Driver Role -->
+        <record id="group_driver" model="res.groups">
+            <field name="name">Driver</field>
+            <field name="category_id" ref="module_category_transitops"/>
+            <field name="comment">Can view assigned trips and log fuel/expenses.</field>
+        </record>
+
+        <!-- Dispatcher Role -->
+        <record id="group_dispatcher" model="res.groups">
+            <field name="name">Dispatcher</field>
+            <field name="category_id" ref="module_category_transitops"/>
+            <field name="comment">Can assign vehicles and drivers to trips.</field>
+        </record>
+
+        <!-- Fleet Manager Role -->
+        <record id="group_fleet_manager" model="res.groups">
+            <field name="name">Fleet Manager</field>
+            <field name="category_id" ref="module_category_transitops"/>
+            <field name="implied_ids" eval="[(4, ref('group_dispatcher'))]"/>
+            <field name="comment">Full access to fleet operations, vehicles, and maintenance.</field>
+        </record>
+
+        <!-- Safety Officer Role -->
+        <record id="group_safety_officer" model="res.groups">
+            <field name="name">Safety Officer</field>
+            <field name="category_id" ref="module_category_transitops"/>
+            <field name="comment">Manages compliance, licenses, and incident reports.</field>
+        </record>
+
+        <!-- Financial Analyst Role -->
+        <record id="group_financial_analyst" model="res.groups">
+            <field name="name">Financial Analyst</field>
+            <field name="category_id" ref="module_category_transitops"/>
+            <field name="comment">Views ROI, expenses, fuel costs, and financial reports.</field>
+        </record>
+
+        <!-- Admin / System Role (Mapped to transitops_auth.group_admin for UI) -->
+        <record id="group_admin" model="res.groups">
+            <field name="name">TransitOps Administrator</field>
+            <field name="category_id" ref="module_category_transitops"/>
+            <field name="implied_ids" eval="[(4, ref('group_fleet_manager')), (4, ref('group_safety_officer')), (4, ref('group_financial_analyst'))]"/>
+            <field name="comment">Full system access.</field>
+        </record>
+
+    </data>
+</odoo>

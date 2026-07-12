@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="transitops_dashboard.main" owl="1">
+        <div class="transitops-dashboard-wrapper">
+            <t t-if="state.loading">
+                <div class="transitops-loading">
+                    <div class="spinner"></div>
+                    <p>Loading Dashboard...</p>
+                </div>
+            </t>
+            <t t-else="">
+                <!-- Sidebar is assumed to be handled by Odoo's web client, but we style the main area -->
+                <div class="transitops-dashboard">
+                    
+                    <!-- Top Bar -->
+                    <div class="top-bar">
+                        <div class="brand">TransitOps</div>
+                        <div class="search-bar">
+                            <i class="fa fa-search"></i>
+                            <input type="text" placeholder="Search vehicles, drivers, trips..."/>
+                        </div>
+                        <div class="user-actions">
+                            <i class="fa fa-bell-o"></i>
+                            <i class="fa fa-question-circle-o"></i>
+                            <div class="profile">
+                                <span>Dispatcher</span>
+                                <div class="avatar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filters-bar">
+                        <div class="filter-label"><i class="fa fa-filter"></i> FILTERS</div>
+                        <button class="filter-btn">All Vehicle Types</button>
+                        <button class="filter-btn">All Statuses <i class="fa fa-check"></i></button>
+                        <button class="filter-btn">All Regions</button>
+                        <button class="filter-btn date-filter"><i class="fa fa-calendar-o"></i> Today <i class="fa fa-chevron-down"></i></button>
+                    </div>
+
+                    <!-- KPIs -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-title">ACTIVE<br/>VEHICLES <i class="fa fa-car"></i></div>
+                            <div class="kpi-value"><t t-esc="state.data.kpis.active_vehicles.value"/><span class="trend pos"><t t-esc="state.data.kpis.active_vehicles.trend"/></span></div>
+                        </div>
+                        <div class="kpi-card highlight-green">
+                            <div class="kpi-title">AVAILABLE <i class="fa fa-check-circle-o"></i></div>
+                            <div class="kpi-value"><t t-esc="state.data.kpis.available.value"/><span class="trend pos"><t t-esc="state.data.kpis.available.trend"/></span></div>
+                        </div>
+                        <div class="kpi-card highlight-orange">
+                            <div class="kpi-title">IN<br/>MAINTENANCE <i class="fa fa-wrench"></i></div>
+                            <div class="kpi-value"><t t-esc="state.data.kpis.in_maintenance.value"/><span class="trend neg"><t t-esc="state.data.kpis.in_maintenance.trend"/></span></div>
+                        </div>
+                        <div class="kpi-card highlight-blue">
+                            <div class="kpi-title">ACTIVE<br/>TRIPS <i class="fa fa-random"></i></div>
+                            <div class="kpi-value"><t t-esc="state.data.kpis.active_trips.value"/><span class="trend muted"><t t-esc="state.data.kpis.active_trips.trend"/></span></div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-title">PENDING<br/>TRIPS <i class="fa fa-clock-o"></i></div>
+                            <div class="kpi-value"><t t-esc="state.data.kpis.pending_trips.value"/></div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-title">DRIVERS<br/>ON DUTY <i class="fa fa-id-card-o"></i></div>
+                            <div class="kpi-value"><t t-esc="state.data.kpis.drivers_on_duty.value"/></div>
+                        </div>
+                        <div class="kpi-card highlight-blue-solid">
+                            <div class="kpi-title">UTILIZATION <i class="fa fa-pie-chart"></i></div>
+                            <div class="kpi-value"><t t-esc="state.data.kpis.utilization.value"/></div>
+                            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 81%"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Main Grid -->
+                    <div class="main-content-grid">
+                        
+                        <!-- Left Column (Span 2) -->
+                        <div class="left-col">
+                            
+                            <!-- Recent Trips -->
+                            <div class="panel trips-panel">
+                                <div class="panel-header">
+                                    <h2>Recent Trips</h2>
+                                    <a href="#">View All</a>
+                                </div>
+                                <table class="trips-table">
+                                    <thead>
+                                        <tr>
+                                            <th>TRIP ID</th>
+                                            <th>VEHICLE</th>
+                                            <th>DRIVER</th>
+                                            <th>STATUS</th>
+                                            <th>ETA / TIME</th>
+                                            <th>ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.data.recent_trips" t-as="trip" t-key="trip.id">
+                                            <tr>
+                                                <td><t t-esc="trip.id"/></td>
+                                                <td><t t-esc="trip.vehicle"/></td>
+                                                <td>
+                                                    <div class="driver-info">
+                                                        <div class="avatar-small"><t t-esc="trip.driver_initial"/></div>
+                                                        <t t-esc="trip.driver"/>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span t-attf-class="badge badge-#{trip.status_class}">
+                                                        <i t-attf-class="fa #{trip.status_class == 'primary' ? 'fa-play' : trip.status_class == 'success' ? 'fa-check' : trip.status_class == 'warning' ? 'fa-wrench' : 'fa-paper-plane'}"></i>
+                                                        <t t-esc="trip.status"/>
+                                                    </span>
+                                                </td>
+                                                <td class="eta"><t t-esc="trip.eta"/></td>
+                                                <td></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Bottom Row: Charts & Schedules -->
+                            <div class="bottom-row">
+                                <div class="panel chart-panel">
+                                    <div class="panel-header">
+                                        <h2>Fuel Consumption</h2>
+                                        <i class="fa fa-ellipsis-h"></i>
+                                    </div>
+                                    <div class="chart-container">
+                                        <canvas id="fuelChart"></canvas>
+                                    </div>
+                                </div>
+
+                                <div class="panel schedule-panel">
+                                    <div class="panel-header">
+                                        <h2>Maintenance Schedule</h2>
+                                        <i class="fa fa-ellipsis-h"></i>
+                                    </div>
+                                    <div class="schedule-list">
+                                        <t t-foreach="state.data.maintenance_schedule" t-as="task" t-key="task.title">
+                                            <div class="schedule-card">
+                                                <div class="icon-box"><i t-attf-class="fa fa-#{task.icon == 'oil-can' ? 'tint' : 'truck'}"></i></div>
+                                                <div class="info">
+                                                    <h4><t t-esc="task.title"/></h4>
+                                                    <p><t t-esc="task.vehicle"/> • <t t-esc="task.desc"/></p>
+                                                </div>
+                                                <div class="status text-danger"><t t-esc="task.status"/></div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column (Span 1) -->
+                        <div class="right-col">
+                            
+                            <!-- Fleet Status -->
+                            <div class="panel status-panel">
+                                <div class="panel-header">
+                                    <h2>Fleet Status</h2>
+                                    <i class="fa fa-refresh"></i>
+                                </div>
+                                <div class="status-list">
+                                    <t t-foreach="state.data.fleet_status" t-as="stat" t-key="stat.label">
+                                        <div class="status-item">
+                                            <div class="stat-header">
+                                                <div class="label-dot">
+                                                    <span class="dot" t-attf-style="background-color: #{stat.color}"></span>
+                                                    <t t-esc="stat.label"/>
+                                                </div>
+                                                <div class="stat-value"><t t-esc="stat.value"/>%</div>
+                                            </div>
+                                            <div class="progress-bg">
+                                                <div class="progress-fill" t-attf-style="width: #{stat.value}%; background-color: #{stat.color}"></div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Map Panel -->
+                            <div class="panel map-panel">
+                                <div class="map-overlay">
+                                    <h2>Live Fleet Map</h2>
+                                    <p><span class="dot-green"></span> 71 Active Nodes</p>
+                                </div>
+                                <i class="fa fa-expand expand-icon"></i>
+                            </div>
+
+                            <!-- Recent Activity -->
+                            <div class="panel activity-panel">
+                                <h2>Recent Activity</h2>
+                                <div class="timeline">
+                                    <t t-foreach="state.data.recent_activity" t-as="act" t-key="act.title">
+                                        <div class="timeline-item">
+                                            <div class="dot-marker" t-attf-style="background-color: #{act.color}"></div>
+                                            <div class="content">
+                                                <h4><t t-esc="act.title"/></h4>
+                                                <p><t t-esc="act.desc"/></p>
+                                                <span class="time"><t t-esc="act.time"/></span>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                                <!-- Floating Action Button -->
+                                <button class="fab-btn"><i class="fa fa-plus"></i></button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="transitops_driver.registry_main" owl="1">
+        <div class="transitops-driver-wrapper">
+            <t t-if="state.loading">
+                <div class="transitops-loading">
+                    <div class="spinner"></div>
+                    <p>Loading Driver Profiles...</p>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="transitops-driver-registry">
+                    
+                    <!-- Header Area -->
+                    <div class="registry-header">
+                        <div class="title-group">
+                            <h1>Driver Management &amp; Safety Profiles</h1>
+                            <p>Manage driver records, licenses, certifications, and safety compliance.</p>
+                        </div>
+                        <div class="action-group">
+                            <button class="btn-import-drivers">
+                                Import Drivers
+                            </button>
+                            <button class="btn-add-driver" t-on-click="openCreateForm">
+                                <i class="fa fa-plus"></i> Add Driver
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Section -->
+                    <div class="kpi-section">
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <span>Total Drivers</span>
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <div class="kpi-value-row">
+                                <span class="kpi-value"><t t-esc="state.kpis.total"/></span>
+                                <span class="kpi-trend trend-up"><i class="fa fa-arrow-up"></i>2.4%</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <span>Available</span>
+                                <i class="fa fa-check-circle text-success"></i>
+                            </div>
+                            <div class="kpi-value-row">
+                                <span class="kpi-value"><t t-esc="state.kpis.available"/></span>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <span>On Trip</span>
+                                <i class="fa fa-car text-primary"></i>
+                            </div>
+                            <div class="kpi-value-row">
+                                <span class="kpi-value"><t t-esc="state.kpis.on_trip"/></span>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <span>License Expiring</span>
+                                <i class="fa fa-exclamation-triangle text-danger"></i>
+                            </div>
+                            <div class="kpi-value-row">
+                                <span class="kpi-value"><t t-esc="state.kpis.expiring"/></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Bar -->
+                    <div class="filter-bar">
+                        <div class="filter-group filter-search">
+                            <label>Search Driver</label>
+                            <div class="input-wrapper">
+                                <i class="fa fa-search"></i>
+                                <input type="text" placeholder="Name or ID"/>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label>Category</label>
+                            <select>
+                                <option>All</option>
+                                <option>LMV</option>
+                                <option>HMV</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select>
+                                <option>All Status</option>
+                                <option>Available</option>
+                                <option>On Trip</option>
+                                <option>Suspended</option>
+                            </select>
+                        </div>
+                        <div class="filter-actions">
+                            <button class="btn-reset">Reset</button>
+                            <button class="btn-apply">Apply</button>
+                        </div>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div class="registry-table-container">
+                        <table class="registry-table">
+                            <thead>
+                                <tr>
+                                    <th>Driver</th>
+                                    <th>Employee ID</th>
+                                    <th>Category</th>
+                                    <th>Safety Score</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.drivers" t-as="driver" t-key="driver.id">
+                                    <tr t-on-click="() => this.openDriverRecord(driver.id)">
+                                        <td class="driver-info">
+                                            <img t-attf-src="/web/image/transitops.driver/#{driver.id}/image_1920" class="driver-avatar" onerror="this.src='/web/static/img/placeholder.png'"/>
+                                            <span><t t-esc="driver.name"/></span>
+                                        </td>
+                                        <td><t t-esc="driver.employee_id || 'N/A'"/></td>
+                                        <td><t t-esc="driver.category || 'N/A'"/></td>
+                                        <td class="safety-score">
+                                            <div class="progress-bar-container">
+                                                <div t-attf-class="progress-fill #{driver.safety_score &gt; 90 ? 'high' : (driver.safety_score &gt; 70 ? 'medium' : 'low')}" t-attf-style="width: #{driver.safety_score || 0}%"></div>
+                                            </div>
+                                            <span class="score-text"><t t-esc="driver.safety_score || 0"/>%</span>
+                                        </td>
+                                        <td>
+                                            <span t-attf-class="status-badge badge-#{driver.status}">
+                                                <t t-if="driver.status === 'available'">Available</t>
+                                                <t t-if="driver.status === 'in_trip'">On Trip</t>
+                                                <t t-if="driver.status === 'suspended'">Suspended</t>
+                                                <t t-if="driver.status === 'inactive'">Inactive</t>
+                                            </span>
+                                        </td>
+                                        <td class="actions-cell">
+                                            <i class="fa fa-ellipsis-h"></i>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="state.drivers.length === 0">
+                                    <tr>
+                                        <td colspan="6" class="empty-state">No drivers found.</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Compliance Alert -->
+                    <div class="compliance-alert">
+                        <div class="alert-icon">
+                            <i class="fa fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Compliance Warning</h4>
+                            <p>Drivers with expired licenses or suspended status are automatically blocked from trip assignment.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>
